@@ -234,7 +234,7 @@ pub fn multi_mint(
 ) -> (ContractState, Vec<EventGroup>) {
     assert!(!mints.is_empty(), "At least one mint msg should be passed");
 
-    let receiver = mints[0].to.clone();
+    let receiver = mints[0].to;
     assert!(
         !mints.iter().any(|mint| mint.to != receiver),
         "Only one receiver supported in payable multi-mint"
