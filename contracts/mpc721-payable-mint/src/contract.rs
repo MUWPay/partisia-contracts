@@ -109,13 +109,13 @@ pub fn mint(
     ctx: ContractContext,
     state: ContractState,
     token_id: u128,
-    receiver: Address,
+    to: Address,
     token_uri: Option<String>,
 ) -> (ContractState, Vec<EventGroup>) {
     let mut payout_transfer_events = EventGroup::builder();
 
     MPC20TransferFromMsg {
-        from: receiver,
+        from: to,
         to: ctx.contract_address,
         amount: state.payable_mint_info.amount,
     }
@@ -132,7 +132,7 @@ pub fn mint(
         0x10,
         &MintMsg {
             token_id,
-            to: receiver,
+            to,
             token_uri,
         },
     );
