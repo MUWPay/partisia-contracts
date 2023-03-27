@@ -19,7 +19,7 @@ use mpc721_base::{
         RevokeForAllMsg, RevokeMsg, SetBaseUriMsg, TransferFromMsg, TransferMsg, UpdateMinterMsg,
     },
 };
-use utils::events::{build_msg_callback, IntoShortnameRPCEvent};
+use utils::events::{assert_callback_success, build_msg_callback, IntoShortnameRPCEvent};
 
 const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -273,11 +273,4 @@ pub fn on_multi_mint_callbacl(
     let _ = execute_multi_mint(&ctx, &mut state.mpc721, &msg);
 
     state
-}
-
-fn assert_callback_success(callback_ctx: &CallbackContext) {
-    assert!(
-        callback_ctx.success && callback_ctx.results.iter().all(|res| res.succeeded),
-        "Callback has errors"
-    );
 }
