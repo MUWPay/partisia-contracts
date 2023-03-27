@@ -1,5 +1,6 @@
 use pbc_contract_common::{
     address::{Address, ShortnameCallback},
+    context::CallbackContext,
     events::EventGroupBuilder,
 };
 use pbc_traits::ReadWriteRPC;
@@ -63,6 +64,18 @@ pub fn build_msg_callback_with_cost<T>(
         .argument(msg.clone())
         .with_cost(cost)
         .done();
+}
+
+/// ## Description
+/// Validates that all spawned events from original action was executed successfully
+/// ## Params
+/// * **callback_ctx** is an object of type [`CallbackContext`]
+#[inline]
+pub fn assert_callback_success(callback_ctx: &CallbackContext) {
+    assert!(
+        callback_ctx.success && callback_ctx.results.iter().all(|res| res.succeeded),
+        "Callback has errors"
+    );
 }
 
 #[cfg(test)]
