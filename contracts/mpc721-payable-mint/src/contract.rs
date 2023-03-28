@@ -121,15 +121,9 @@ pub fn mint(
     }
     .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
 
-    MPC20TransferMsg {
-        to: state.mpc721.owner.unwrap(),
-        amount: state.payable_mint_info.amount,
-    }
-    .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
-
     build_msg_callback(
         &mut payout_transfer_events,
-        0x10,
+        0x30,
         &MintMsg {
             token_id,
             to,
@@ -140,7 +134,29 @@ pub fn mint(
     (state, vec![payout_transfer_events.build()])
 }
 
-#[callback(shortname = 0x10)]
+#[callback(shortname = 0x30)]
+pub fn on_mint_transfer_from_callback(
+    ctx: ContractContext,
+    callback_ctx: CallbackContext,
+    state: ContractState,
+    msg: MintMsg,
+) -> (ContractState, Vec<EventGroup>) {
+    assert_callback_success(&callback_ctx);
+
+    let mut payout_transfer_events = EventGroup::builder();
+
+    MPC20TransferMsg {
+        to: state.mpc721.owner.unwrap(),
+        amount: state.payable_mint_info.amount,
+    }
+    .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
+
+    build_msg_callback(&mut payout_transfer_events, 0x31, &msg);
+
+    (state, vec![payout_transfer_events.build()])
+}
+
+#[callback(shortname = 0x31)]
 pub fn on_mint_callback(
     ctx: ContractContext,
     callback_ctx: CallbackContext,
@@ -251,18 +267,34 @@ pub fn multi_mint(
     }
     .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
 
-    MPC20TransferMsg {
-        to: state.mpc721.owner.unwrap(),
-        amount: mint_price,
-    }
-    .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
-
-    build_msg_callback(&mut payout_transfer_events, 0x21, &MultiMintMsg { mints });
+    build_msg_callback(&mut payout_transfer_events, 0x32, &MultiMintMsg { mints });
 
     (state, vec![payout_transfer_events.build()])
 }
 
-#[callback(shortname = 0x21)]
+#[callback(shortname = 0x32)]
+pub fn on_multi_mint_transfer_from_callback(
+    ctx: ContractContext,
+    callback_ctx: CallbackContext,
+    state: ContractState,
+    msg: MultiMintMsg,
+) -> (ContractState, Vec<EventGroup>) {
+    assert_callback_success(&callback_ctx);
+
+    let mut payout_transfer_events = EventGroup::builder();
+
+    MPC20TransferMsg {
+        to: state.mpc721.owner.unwrap(),
+        amount: (msg.mints.len() as u128) * state.payable_mint_info.amount,
+    }
+    .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
+
+    build_msg_callback(&mut payout_transfer_events, 0x33, &msg);
+
+    (state, vec![payout_transfer_events.build()])
+}
+
+#[callback(shortname = 0x33)]
 pub fn on_multi_mint_callbacl(
     ctx: ContractContext,
     callback_ctx: CallbackContext,
