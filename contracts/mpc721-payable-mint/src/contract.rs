@@ -135,13 +135,14 @@ pub fn mint(
 }
 
 #[callback(shortname = 0x30)]
-pub fn on_mint_transfer_from_callback(
+pub fn on_mint_callback(
     ctx: ContractContext,
     callback_ctx: CallbackContext,
-    state: ContractState,
+    mut state: ContractState,
     msg: MintMsg,
 ) -> (ContractState, Vec<EventGroup>) {
     assert_callback_success(&callback_ctx);
+    let _ = execute_mint(&ctx, &mut state.mpc721, &msg);
 
     let mut payout_transfer_events = EventGroup::builder();
 
@@ -151,22 +152,7 @@ pub fn on_mint_transfer_from_callback(
     }
     .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
 
-    build_msg_callback(&mut payout_transfer_events, 0x31, &msg);
-
     (state, vec![payout_transfer_events.build()])
-}
-
-#[callback(shortname = 0x31)]
-pub fn on_mint_callback(
-    ctx: ContractContext,
-    callback_ctx: CallbackContext,
-    mut state: ContractState,
-    msg: MintMsg,
-) -> ContractState {
-    assert_callback_success(&callback_ctx);
-    let _ = execute_mint(&ctx, &mut state.mpc721, &msg);
-
-    state
 }
 
 #[action(shortname = 0x11)]
@@ -256,14 +242,12 @@ pub fn multi_mint(
         "Only one receiver supported in payable multi-mint"
     );
 
-    let mint_price = (mints.len() as u128) * state.payable_mint_info.amount;
-
     let mut payout_transfer_events = EventGroup::builder();
 
     MPC20TransferFromMsg {
         from: receiver,
         to: ctx.contract_address,
-        amount: mint_price,
+        amount: (mints.len() as u128) * state.payable_mint_info.amount,
     }
     .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
 
@@ -273,13 +257,14 @@ pub fn multi_mint(
 }
 
 #[callback(shortname = 0x32)]
-pub fn on_multi_mint_transfer_from_callback(
+pub fn on_multi_mint_callbacl(
     ctx: ContractContext,
     callback_ctx: CallbackContext,
-    state: ContractState,
+    mut state: ContractState,
     msg: MultiMintMsg,
 ) -> (ContractState, Vec<EventGroup>) {
     assert_callback_success(&callback_ctx);
+    let _ = execute_multi_mint(&ctx, &mut state.mpc721, &msg);
 
     let mut payout_transfer_events = EventGroup::builder();
 
@@ -289,20 +274,27 @@ pub fn on_multi_mint_transfer_from_callback(
     }
     .as_interaction(&mut payout_transfer_events, &state.payable_mint_info.token);
 
-    build_msg_callback(&mut payout_transfer_events, 0x33, &msg);
-
     (state, vec![payout_transfer_events.build()])
 }
 
-#[callback(shortname = 0x33)]
-pub fn on_multi_mint_callbacl(
+#[action(shortname = 0x51)]
+pub fn recover_funds(
     ctx: ContractContext,
-    callback_ctx: CallbackContext,
-    mut state: ContractState,
-    msg: MultiMintMsg,
-) -> ContractState {
-    assert_callback_success(&callback_ctx);
-    let _ = execute_multi_mint(&ctx, &mut state.mpc721, &msg);
+    state: ContractState,
+    recipient: Address,
+) -> (ContractState, Vec<EventGroup>) {
+    assert!(
+        state.mpc721.minter == ctx.sender,
+        "Funds recovery can only be done from minter account"
+    );
 
-    state
+    let mut recover_transfer_events = EventGroup::builder();
+
+    MPC20TransferMsg {
+        to: recipient,
+        amount: state.payable_mint_info.amount,
+    }
+    .as_interaction(&mut recover_transfer_events, &state.payable_mint_info.token);
+
+    (state, vec![recover_transfer_events.build()])
 }
