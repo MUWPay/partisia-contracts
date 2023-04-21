@@ -8,9 +8,6 @@
 //! some tokens deposited for both pairs based on the price.
 
 #![allow(unused_variables)]
-#[macro_use]
-extern crate pbc_contract_codegen;
-extern crate core;
 
 use create_type_spec_derive::CreateTypeSpec;
 use pbc_contract_common::address::{Address, AddressType, Shortname};
@@ -131,7 +128,7 @@ pub struct PoolContractState {
 }
 
 impl PoolContractState {
-// INTERNAL FUNCTIONS
+// functions for operating on PoolContract state.
 /// Retrieves a copy of the token balance that matches `user`.
     ///
     /// ### Parameters:
@@ -158,22 +155,23 @@ fn get_mut_balance_for(&mut self, user: &Address) -> &mut TokenBalance {
         token_balance
     }
 
-/// internal function adding token to the balance.
-/// Paramters:
- /// * `user`: [`&Address`] - A reference to the user to add `amount` to.
-///
-/// * `token`: [`Token`] - The token to add to.
-///
-/// * `amount`: [`u128`] - The amount to add.
-///
-fn add_token_balance(&mut self, user: Address, token: Token, amount: u128) {
-    let token_balance = self.get_mut_balance_for(&user);
-    //TODO: transfer the token from the user to the contract
 
 
-    *token_balance.get_mut_amount_of(&token) += amount;
-    
-}
+/// function for adding tokens to token_balances for the map
+/// If the user isn't already present, creates an entry with an empty TokenBalance.
+    ///
+    /// ### Parameters:
+    ///
+    /// * `user`: [`&Address`] - A reference to the user to add `amount` to.
+    ///
+    /// * `token`: [`Token`] - The token to add to.
+    ///
+    /// * `amount`: [`u128`] - The amount to add.
+    ///
+fn add_to_token_balance(&mut self, user: Address, token: Token, amount: u128) {
+        let token_balance = self.get_mut_balance_for(&user);
+        *token_balance.get_mut_amount_of(&token) += amount;
+    }
 ///  internal function for decucting the balance from the token_balances map (both token liquidity).
 /// * `user`: [`&Address`] - address of the user that wants to  recover their liquidity
 /// * `token`: [`Token`] - The token to which you want to recover the liquidity.
@@ -191,14 +189,56 @@ fn deduct_from_token_balance(&mut self, user: Address, token: &Token, amount: u1
         }
 }
 
+// internal function for updating the mappings of the tokens once there are operations by user (swap, deposit and withdraw liquidity).
+  ///
+    /// ### Parameters:
+    ///
+    /// * `from`: [`Address`] - The address of the transferring party.
+    ///
+    /// * `to`: [`Address`] - The address of the receiving party.
+    ///
+    /// * `moved_token`: [`Token`] - The token being transferred.
+    ///
+    /// * `amount`: [`u128`] - The amount being transferred. 
+    fn move_tokens(&mut self, from: Address, to: Address, moved_token: Token, amount: u128) {
+
+        self.deduct_from_token_balance(from, &moved_token, amount);
+        self.add_to_token_balance(to, moved_token, amount);
+    }
+    
+// function to determine the correct token reference (as input and output swapped token) based on the given address.
+
+    fn deduce_tokens(&self, provided_token_address: Address) -> (Token, Token) {
+        let provided_a = self.token_a_address == provided_token_address;
+            let provided_b = self.token_b_address == provided_token_address;
+            if !provided_a && !provided_b {
+                panic!("Provided invalid token address")
+            }
+    
+            if provided_a {
+                (Token::A, Token::B)
+            } else {
+                (Token::B, Token::A)
+            }
+    }
+    /// Checks that the pools of the contracts have liquidity.
+    ///
+    /// ### Parameters:
+    ///
+    ///  * `state`: [`&LiquiditySwapContractState`] - A reference to the current state of the contract.
+    ///
+    /// ### Returns:
+    /// True if the pools have liquidity, false otherwise [`bool`]
+    fn contract_pools_have_liquidity(&self) -> bool {
+        let contract_token_balance = self.get_balance_for(&self.contract);
+        contract_token_balance.a_tokens != 0 && contract_token_balance.b_tokens != 0
+    }
 // function to check if pool contract liquidity is initialized. 
-fn contract_pools_have_liquidity(&self) -> bool {
-    let contract_token_balance = self.get_balance_for(&self.contract);
-    contract_token_balance.a_tokens != 0 && contract_token_balance.b_tokens != 0
+
 }
 
-// function to fetch the the correct token reference. 
 
+// function to fetch the the correct token reference. 
 
 
 #[init]
@@ -264,7 +304,7 @@ let (inputToken, _) = state.deduce_tokens(token_address);
 let mut deposit_event = EventGroup::builder();
 
 // calling the byoc contract to transfer the tokens to this contract
-deposit_event.call(token_address, Self::token_contract_transfer_from())
+deposit_event.call(token_address, token_contract_transfer_from())
 .argument(context.sender)
 .argument(context.contract_address)
 .argument(token_amount)
@@ -325,7 +365,7 @@ pub fn swap(
     let (provided_token, opposite_token)  = state.deduce_tokens(token_address);
     let contract_balance = state.get_balance_for(&state.contract);
 
-    let output_token_amount = Self::calculate_swap_to_amount(
+    let output_token_amount = calculate_swap_to_amount(
         contract_balance.get_amount_of(&provided_token),
         contract_balance.get_amount_of(&opposite_token),
         amount,
@@ -333,9 +373,10 @@ pub fn swap(
     );
 
     // here comes the swap 
-    /**
+    /*
      * tokenA : sender -> smart_contract.
      * tokenB : converted_amount - fees -> sender.
+     
      */
     state.move_tokens(context.sender, state.contract, provided_token, amount);
 
@@ -363,7 +404,7 @@ pub fn withdraw(
     let mut event_group_builder = EventGroup::builder();
 
     // calling the functional event in order to transfer the token retrieved by the user direct from the pool.
-    event_group_builder.call(token_address, Self::token_contract_transfer())
+    event_group_builder.call(token_address, token_contract_transfer())
     .argument(context.sender)
     .argument(amount)
     .done();
@@ -392,7 +433,7 @@ let (input_token, output_token) = state.deduce_tokens(token_address);
 let contract_balance = state.get_balance_for(&state.contract);
 
 // now to determine how many liquidity tokens are to be generated for given input token supply, we will again use the conversion formula
-let (output_supply_equivalent, minted_lp_tokens) = Self::calculate_equivalent_and_minted_tokens(
+let (output_supply_equivalent, minted_lp_tokens) = calculate_equivalent_and_minted_tokens(
     amount,
     contract_balance.get_amount_of(&input_token),
     contract_balance.get_amount_of(&output_token),
@@ -405,7 +446,7 @@ assert!(
     "pool::provide_liquidity:-> Provided amount is insufficient"
 );
 
-Self::provide_liquidity_internal(
+provide_liquidity_internal(
     &mut state,
     user,
     token_address,
@@ -439,7 +480,7 @@ state.deduct_from_token_balance(*user, &Token::LIQUIDITY, liquidity_token_amount
 
 let contract_token_balance = state.get_balance_for(&state.contract);
 
-let (reclaim_input,reclaim_output) = Self::calculate_reclaim_output(
+let (reclaim_input,reclaim_output) = calculate_reclaim_output(
     liquidity_token_amount,
     contract_token_balance.a_tokens,
     contract_token_balance.b_tokens,
@@ -457,35 +498,73 @@ state.deduct_from_token_balance(state.contract, &Token::LIQUIDITY, liquidity_tok
 
 
 
-fn deduce_tokens(&self, provided_token_address: Address) -> (Token, Token) {
-    let provided_a = self.token_a_address == provided_token_address;
-        let provided_b = self.token_b_address == provided_token_address;
-        if !provided_a && !provided_b {
-            panic!("Provided invalid token address")
-        }
 
-        if provided_a {
-            (Token::A, Token::B)
-        } else {
-            (Token::B, Token::A)
-        }
+
+
+// inline function for generate the events
+
+// for transfer event
+#[inline]
+fn token_contract_transfer_from() -> Shortname {
+    Shortname::from_u32(0x03)
 }
 
-// internal function for updating the mappings of the tokens once there are operations by user (swap, deposit and withdraw liquidity).
-  ///
-    /// ### Parameters:
-    ///
-    /// * `from`: [`Address`] - The address of the transferring party.
-    ///
-    /// * `to`: [`Address`] - The address of the receiving party.
-    ///
-    /// * `moved_token`: [`Token`] - The token being transferred.
-    ///
-    /// * `amount`: [`u128`] - The amount being transferred. 
-fn move_tokens(&mut self, from: Address, to: Address, moved_token: Token, amount: u128) {
 
-    self.deduct_from_token_balance(from, &moved_token, amount);
-    self.add_to_token_balance(to, moved_token, amount);
+
+
+
+#[inline]
+fn token_contract_transfer() -> Shortname {
+    Shortname::from_u32(0x01)
+}
+// PUBLIC functions 
+/// Initializes the contract with the given values.
+/// # Parameters
+///  * `context`: [`ContractContext`] - The contract context containing sender and chain information
+///  * `token_a_address`: [`Address`] - The address of incoming token pair in the swap.
+/// * `token_b_address`: [`Address`] - The address of outgoing token pair in the swap.
+/// * `swap_fee`: [`u128`] - The fee (in 1000) that is to be subtracted from the final swap value, and paid to the corresponding contract owner.
+
+/// this function is invoked initial liquidity and creation of contract (entrypoint), to be called by the pool_factory
+
+pub fn provide_initial_liquidity(
+    context: ContractContext,
+    mut state: PoolContractState,
+    input_token_amt: u128,
+    output_token_amt: u128,
+    ) -> (PoolContractState,Vec<EventGroup>){
+  
+  assert!(!state.contract_pools_have_liquidity(),
+        "pods::provide_initial_liquidity : -> cant-add-liquidity-already-initialized"
+);
+
+let liquidity_tokens_init = initial_liquidity_tokens(input_token_amt, output_token_amt);
+
+assert!(liquidity_tokens_init > 0, "pods::provide_initial_liquidity : -> insuuficient-liq" );
+
+let provided_address = state.token_a_address;
+        provide_liquidity_internal(
+            &mut state,
+            &context.sender,
+            provided_address,
+            input_token_amt,
+            output_token_amt,
+            liquidity_tokens_init,
+        );
+        (state, vec![])
+    }
+
+
+
+
+
+
+
+/// Determines the initial amount of liquidity tokens, or shares that are to be added to the pool 
+/// This implementation is derived from section 3.4 of: [Uniswap v2 whitepaper](https://uniswap.org/whitepaper.pdf). <br>
+/// It guarantees that the value of a liquidity token becomes independent of the ratio at which liquidity was initially provided.
+fn initial_liquidity_tokens(token_a_amount: u128, token_b_amount: u128) -> u128 {
+    u128_sqrt(token_a_amount * token_b_amount)
 }
 
 
@@ -513,81 +592,6 @@ fn u128_sqrt(y: u128) -> u128 {
     }
     l
 }
-
-
-/// Determines the initial amount of liquidity tokens, or shares that are to be added to the pool 
-/// This implementation is derived from section 3.4 of: [Uniswap v2 whitepaper](https://uniswap.org/whitepaper.pdf). <br>
-/// It guarantees that the value of a liquidity token becomes independent of the ratio at which liquidity was initially provided.
-fn initial_liquidity_tokens(token_a_amount: u128, token_b_amount: u128) -> u128 {
-    Self::u128_sqrt(token_a_amount * token_b_amount)
-}
-
-
-/// function for adding tokens to token_balances for the map
-/// If the user isn't already present, creates an entry with an empty TokenBalance.
-    ///
-    /// ### Parameters:
-    ///
-    /// * `user`: [`&Address`] - A reference to the user to add `amount` to.
-    ///
-    /// * `token`: [`Token`] - The token to add to.
-    ///
-    /// * `amount`: [`u128`] - The amount to add.
-    ///
-fn add_to_token_balance(&mut self, user: Address, token: Token, amount: u128) {
-        let token_balance = self.get_mut_balance_for(&user);
-        *token_balance.get_mut_amount_of(&token) += amount;
-    }
-
-
-// inline function for generate the events
-
-// for transfer event
-#[inline]
-fn token_contract_transfer_from() -> Shortname {
-    Shortname::from_u32(0x03)
-}
-
-#[inline]
-fn token_contract_transfer() -> Shortname {
-    Shortname::from_u32(0x01)
-}
-// PUBLIC functions 
-/// Initializes the contract with the given values.
-/// # Parameters
-///  * `context`: [`ContractContext`] - The contract context containing sender and chain information
-///  * `token_a_address`: [`Address`] - The address of incoming token pair in the swap.
-/// * `token_b_address`: [`Address`] - The address of outgoing token pair in the swap.
-/// * `swap_fee`: [`u128`] - The fee (in 1000) that is to be subtracted from the final swap value, and paid to the corresponding contract owner.
-
-/// this function is invoked initial liquidity and creation of contract (entrypoint), to be called by the pool_factory
-
-pub fn provide_initial_liquidity(
-    context: ContractContext,
-    mut state: PoolContractState,
-    input_token_amt: u128,
-    output_token_amt: u128,
-    ) -> (PoolContractState,Vec<EventGroup>){
-  
-  assert!(!state.contract_pools_have_liquidity(),
-        "pods::provide_initial_liquidity : -> cant-add-liquidity-already-initialized"
-);
-
-let liquidity_tokens_init = Self::initial_liquidity_tokens(input_token_amt, output_token_amt);
-
-assert!(liquidity_tokens_init > 0, "pods::provide_initial_liquidity : -> insuuficient-liq" );
-
-let provided_address = state.token_a_address;
-        Self::provide_liquidity_internal(
-            &mut state,
-            &context.sender,
-            provided_address,
-            input_token_amt,
-            output_token_amt,
-            liquidity_tokens_init,
-        );
-        (state, vec![])
-    }
 
 
 
@@ -697,5 +701,3 @@ fn provide_liquidity_internal(
     state.add_to_token_balance(state.contract, Token::LIQUIDITY, minted_liquidity_tokens);
 }
 
-
-}
