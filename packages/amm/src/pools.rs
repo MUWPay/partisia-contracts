@@ -100,7 +100,7 @@ fn get_amount_of(&self, token: &Token) -> u128 {
 }
 
 
-const empty_pool_balance: TokenBalance = TokenBalance {
+const EMPTY_POOL_BALANCE: TokenBalance = TokenBalance {
     a_tokens: 0,
     b_tokens: 0,
     liquidity_tokens: 0,
@@ -138,7 +138,7 @@ impl PoolContractState {
     /// # Returns
     /// A copy of the token balance that matches `user`.
 fn get_balance_for(&self, user: &Address) -> &TokenBalance {
-        let token_balance = self.token_balance.get(user).unwrap_or(&empty_pool_balance);
+        let token_balance = self.token_balance.get(user).unwrap_or(&EMPTY_POOL_BALANCE);
         token_balance
     }
 
@@ -151,7 +151,7 @@ fn get_balance_for(&self, user: &Address) -> &TokenBalance {
     /// # Returns
     /// The mutable reference to the token balance that matches `user`.
 fn get_mut_balance_for(&mut self, user: &Address) -> &mut TokenBalance {
-        let token_balance = self.token_balance.entry(*user).or_insert(empty_pool_balance);
+        let token_balance = self.token_balance.entry(*user).or_insert(EMPTY_POOL_BALANCE);
         token_balance
     }
 
@@ -299,7 +299,7 @@ pub fn deposit(
     token_amount: u128
 ) -> (PoolContractState, Vec<EventGroup>) {
 
-let (inputToken, _) = state.deduce_tokens(token_address);
+let (input_token, _) = state.deduce_tokens(token_address);
 
 let mut deposit_event = EventGroup::builder();
 
@@ -313,7 +313,7 @@ deposit_event.call(token_address, token_contract_transfer_from())
 // then executing callback function after the token transfer in order to send the feedback message.
 deposit_event
 .with_callback(SHORTNAME_DEPOSIT_CALLBACK)
-.argument(inputToken)
+.argument(input_token)
 .argument(token_amount)
 .done();
 
@@ -526,7 +526,7 @@ fn token_contract_transfer() -> Shortname {
 /// * `swap_fee`: [`u128`] - The fee (in 1000) that is to be subtracted from the final swap value, and paid to the corresponding contract owner.
 
 /// this function is invoked initial liquidity and creation of contract (entrypoint), to be called by the pool_factory
-
+#[action(shortname = 0x06)]
 pub fn provide_initial_liquidity(
     context: ContractContext,
     mut state: PoolContractState,
@@ -557,17 +557,6 @@ let provided_address = state.token_a_address;
 
 
 
-
-
-
-/// Determines the initial amount of liquidity tokens, or shares that are to be added to the pool 
-/// This implementation is derived from section 3.4 of: [Uniswap v2 whitepaper](https://uniswap.org/whitepaper.pdf). <br>
-/// It guarantees that the value of a liquidity token becomes independent of the ratio at which liquidity was initially provided.
-fn initial_liquidity_tokens(token_a_amount: u128, token_b_amount: u128) -> u128 {
-    u128_sqrt(token_a_amount * token_b_amount)
-}
-
-
 /// Find the u128 square root of `y` (using binary search) rounding down.
 ///
 /// ### Parameters:
@@ -591,6 +580,14 @@ fn u128_sqrt(y: u128) -> u128 {
         }
     }
     l
+}
+
+
+/// Determines the initial amount of liquidity tokens, or shares that are to be added to the pool 
+/// This implementation is derived from section 3.4 of: [Uniswap v2 whitepaper](https://uniswap.org/whitepaper.pdf). <br>
+/// It guarantees that the value of a liquidity token becomes independent of the ratio at which liquidity was initially provided.
+fn initial_liquidity_tokens(token_a_amount: u128, token_b_amount: u128) -> u128 {
+    u128_sqrt(token_a_amount * token_b_amount)
 }
 
 
