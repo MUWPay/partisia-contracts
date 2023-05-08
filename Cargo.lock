@@ -6,14 +6,34 @@ version = 3
 name = "access-control-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "thiserror",
+]
+
+[[package]]
+name = "amm"
+version = "0.0.1"
+dependencies = [
+ "contract-version-base",
+ "create_type_spec_derive 0.5.0",
+ "mpc20-byoc",
+ "mpc721-base",
+ "pbc_contract_codegen 0.5.0",
+ "pbc_contract_common 0.5.0",
+ "pbc_lib 0.5.0",
+ "pbc_traits 0.5.0",
+ "rand",
+ "rand_chacha",
+ "read_write_rpc_derive 0.5.0",
+ "read_write_state_derive 0.5.0",
+ "serde_json",
+ "utils",
 ]
 
 [[package]]
@@ -60,13 +80,13 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "contract-version-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "thiserror",
 ]
 
@@ -74,13 +94,13 @@ dependencies = [
 name = "counter-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "thiserror",
 ]
 
@@ -98,7 +118,19 @@ name = "create_type_spec_derive"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 dependencies = [
- "derive_commons",
+ "derive_commons 0.1.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "uuid",
+]
+
+[[package]]
+name = "create_type_spec_derive"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "derive_commons 0.5.0",
  "proc-macro2",
  "quote",
  "syn",
@@ -144,6 +176,16 @@ dependencies = [
 name = "derive_commons"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "derive_commons"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -221,14 +263,14 @@ name = "mpc1-multisig"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc1-multisig-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -238,13 +280,13 @@ name = "mpc1-multisig-base"
 version = "1.1.0"
 dependencies = [
  "base64",
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "serde_json",
  "thiserror",
@@ -256,14 +298,14 @@ name = "mpc1155"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc1155-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -272,13 +314,13 @@ dependencies = [
 name = "mpc1155-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "serde_json",
  "thiserror",
@@ -290,14 +332,14 @@ name = "mpc20"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc20-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -306,13 +348,13 @@ dependencies = [
 name = "mpc20-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "serde_json",
  "thiserror",
@@ -324,14 +366,14 @@ name = "mpc20-byoc"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc20-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "serde_json",
  "utils",
@@ -342,15 +384,15 @@ name = "mpc20-staking"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc20-base",
  "mpc20-staking-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -359,14 +401,14 @@ dependencies = [
 name = "mpc20-staking-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc20-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "rust_decimal",
  "serde_json",
@@ -379,14 +421,14 @@ name = "mpc721"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc721-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -395,13 +437,13 @@ dependencies = [
 name = "mpc721-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "serde_json",
  "thiserror",
@@ -413,15 +455,15 @@ name = "mpc721_payable_mint"
 version = "1.1.0"
 dependencies = [
  "contract-version-base",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "mpc20-base",
  "mpc721-base",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "serde_json",
  "utils",
 ]
@@ -445,13 +487,13 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 name = "ownable-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "thiserror",
 ]
 
@@ -459,13 +501,13 @@ dependencies = [
 name = "pausable-base"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "create_type_spec_derive 0.1.0",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "thiserror",
 ]
 
@@ -474,10 +516,25 @@ name = "pbc_contract_codegen"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 dependencies = [
- "pbc_contract_common",
- "pbc_external",
- "pbc_lib",
- "pbc_traits",
+ "pbc_contract_common 0.1.0",
+ "pbc_external 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "syn",
+]
+
+[[package]]
+name = "pbc_contract_codegen"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "pbc_contract_common 0.5.0",
+ "pbc_external 0.5.0",
+ "pbc_lib 0.5.0",
+ "pbc_traits 0.5.0",
  "proc-macro2",
  "quote",
  "sha2",
@@ -489,11 +546,36 @@ name = "pbc_contract_common"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 dependencies = [
- "pbc_external",
- "pbc_traits",
+ "pbc_external 0.1.0",
+ "pbc_traits 0.1.0",
  "quote",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
+ "sha2",
+]
+
+[[package]]
+name = "pbc_contract_common"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "create_type_spec_derive 0.5.0",
+ "pbc_contract_core",
+ "pbc_external 0.5.0",
+ "pbc_traits 0.5.0",
+ "quote",
+ "read_write_rpc_derive 0.5.0",
+ "read_write_state_derive 0.5.0",
+]
+
+[[package]]
+name = "pbc_contract_core"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "pbc_traits 0.5.0",
+ "read_write_rpc_derive 0.5.0",
+ "read_write_state_derive 0.5.0",
  "sha2",
 ]
 
@@ -503,9 +585,19 @@ version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 
 [[package]]
+name = "pbc_external"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+
+[[package]]
 name = "pbc_lib"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
+
+[[package]]
+name = "pbc_lib"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
 
 [[package]]
 name = "pbc_traits"
@@ -514,6 +606,20 @@ source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.gi
 dependencies = [
  "quote",
 ]
+
+[[package]]
+name = "pbc_traits"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "quote",
+]
+
+[[package]]
+name = "ppv-lite86"
+version = "0.2.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de"
 
 [[package]]
 name = "proc-macro2"
@@ -534,11 +640,52 @@ dependencies = [
 ]
 
 [[package]]
+name = "rand"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
+dependencies = [
+ "libc",
+ "rand_chacha",
+ "rand_core",
+]
+
+[[package]]
+name = "rand_chacha"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
+dependencies = [
+ "ppv-lite86",
+ "rand_core",
+]
+
+[[package]]
+name = "rand_core"
+version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
+dependencies = [
+ "getrandom",
+]
+
+[[package]]
 name = "read_write_rpc_derive"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 dependencies = [
- "derive_commons",
+ "derive_commons 0.1.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "read_write_rpc_derive"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "derive_commons 0.5.0",
  "proc-macro2",
  "quote",
  "syn",
@@ -549,7 +696,18 @@ name = "read_write_state_derive"
 version = "0.1.0"
 source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=9.1.1#d9a7844b78cb1bc8c1bdfc188090794c0307033e"
 dependencies = [
- "derive_commons",
+ "derive_commons 0.1.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "read_write_state_derive"
+version = "0.5.0"
+source = "git+https://git@gitlab.com/partisiablockchain/language/contract-sdk.git?tag=13.1.0#21dd1030a80b25c15c42aeb25e1bd1eb7920989a"
+dependencies = [
+ "derive_commons 0.5.0",
  "proc-macro2",
  "quote",
  "syn",
@@ -559,16 +717,16 @@ dependencies = [
 name = "rpc-msg-derive"
 version = "1.1.0"
 dependencies = [
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "darling",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
  "proc-macro2",
  "quote",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "syn",
 ]
 
@@ -685,14 +843,14 @@ name = "utils"
 version = "1.1.0"
 dependencies = [
  "base64",
- "create_type_spec_derive",
+ "create_type_spec_derive 0.1.0",
  "hex",
- "pbc_contract_codegen",
- "pbc_contract_common",
- "pbc_lib",
- "pbc_traits",
- "read_write_rpc_derive",
- "read_write_state_derive",
+ "pbc_contract_codegen 0.1.0",
+ "pbc_contract_common 0.1.0",
+ "pbc_lib 0.1.0",
+ "pbc_traits 0.1.0",
+ "read_write_rpc_derive 0.1.0",
+ "read_write_state_derive 0.1.0",
  "rpc-msg-derive",
  "rust_decimal",
  "sha3",

@@ -1,0 +1,41 @@
+[package]
+name = "amm"
+version = "0.0.1"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+
+[package.metadata.partisiablockchain]
+cargo-partisia = "0.2.9"
+
+
+
+[dependencies]
+
+pbc_contract_common = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+pbc_traits = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+pbc_lib = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+read_write_rpc_derive = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+read_write_state_derive = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+create_type_spec_derive = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+pbc_contract_codegen = { git = "https://git@gitlab.com/partisiablockchain/language/contract-sdk.git", tag = "13.1.0" }
+
+
+
+[dev-dependencies]
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+
+
+mpc20-byoc = { path = "../../contracts/mpc20-byoc", features = ["abi"] }
+contract-version-base = { path = "../../packages/contract-version-base", features = ["abi"] }
+mpc721-base= {path= "../../packages/mpc721-base", features=["abi"]}
+
+utils = { path = "../../packages/utils", features = ["abi"] }
+
+serde_json = "1.0"
+
+[features]
+abi = ["pbc_contract_common/abi", "pbc_contract_codegen/abi", "pbc_traits/abi", "create_type_spec_derive/abi", "mpc721-base/abi", "contract-version-base/abi", "utils/abi"]
