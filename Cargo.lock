@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "Multicall"
+version = "0.0.1"
+
+[[package]]
 name = "access-control-base"
 version = "1.1.0"
 dependencies = [
