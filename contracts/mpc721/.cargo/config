@@ -1,2 +1,0 @@
-[alias]
-wasm = "partisia-contract build"

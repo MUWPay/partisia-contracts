@@ -29,13 +29,12 @@ rand = "0.8.5"
 rand_chacha = "0.3.1"
 
 
-mpc20-byoc = { path = "../../contracts/mpc20-byoc", features = ["abi"] }
-contract-version-base = { path = "../../packages/contract-version-base", features = ["abi"] }
-mpc721-base= {path= "../../packages/mpc721-base", features=["abi"]}
-
-utils = { path = "../../packages/utils", features = ["abi"] }
+mpc20-byoc = { path = "../mpc20-byoc", features = ["abi"] }
+wallet = { path = "../contract-version-base", features = ["abi"] }
+mpc721-base= {path= "../mpc721-base", features=["abi"]}
+utils = { path = "../utils", features = ["abi"] }
 
 serde_json = "1.0"
 
 [features]
-abi = ["pbc_contract_common/abi", "pbc_contract_codegen/abi", "pbc_traits/abi", "create_type_spec_derive/abi", "mpc721-base/abi", "contract-version-base/abi", "utils/abi"]
+abi = ["pbc_contract_common/abi", "pbc_contract_codegen/abi", "pbc_traits/abi", "create_type_spec_derive/abi", "contract-version-base/abi", "utils/abi"]

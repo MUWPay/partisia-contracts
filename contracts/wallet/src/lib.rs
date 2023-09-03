@@ -1,1 +1,0 @@
-//! Wallet contract defines the
